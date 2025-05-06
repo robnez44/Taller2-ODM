@@ -16,6 +16,8 @@ import com.pdmtaller2.foodspotbyrmartinez.data.model.Restaurant
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.pdmtaller2.foodspotbyrmartinez.data.repository.restaurants
+import com.pdmtaller2.foodspotbyrmartinez.ui.components.BottomNavigationBar
+import com.pdmtaller2.foodspotbyrmartinez.ui.components.DishCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,6 +33,8 @@ fun MenuScreen(
         dish.name.contains(searchQuery, ignoreCase = true)
     }
 
+    val rows = filteredMenu.chunked(2)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -41,6 +45,9 @@ fun MenuScreen(
                     }
                 }
             )
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = navController, currentRoute = "Menu")
         }
     ) { innerPadding ->
         Column(
@@ -58,31 +65,25 @@ fun MenuScreen(
                     .padding(bottom = 16.dp)
             )
 
-            LazyColumn {
-                items(filteredMenu) { dish ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        elevation = CardDefaults.cardElevation(4.dp)
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(rows) { rowDishes ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column {
-                                Text(text = dish.name, style = MaterialTheme.typography.bodyLarge)
-                                Text(text = dish.description, style = MaterialTheme.typography.bodySmall)
-                            }
-                            Button(
-                                onClick = {
+                        for (dish in rowDishes) {
+                            DishCard(
+                                dish = dish,
+                                onAddClicked = {
                                     Toast.makeText(context, "${dish.name} agregado", Toast.LENGTH_SHORT).show()
-                                }
-                            ) {
-                                Text("Agregar")
-                            }
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        if (rowDishes.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 }
