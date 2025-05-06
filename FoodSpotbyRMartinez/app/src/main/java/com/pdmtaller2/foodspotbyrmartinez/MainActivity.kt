@@ -1,3 +1,4 @@
+// src/MainActivity.kt
 package com.pdmtaller2.foodspotbyrmartinez
 
 import android.os.Bundle
@@ -19,21 +20,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FoodSpotByRMartinezTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
-                    val navController = rememberNavController()
-                    NavigationController(navController)
-                }
+            val navController = rememberNavController()
 
+            FoodSpotByRMartinezTheme {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                ) { innerPadding ->
+                    NavigationController(
+                        navController = navController,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    )
+                }
             }
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    }
+
+    }

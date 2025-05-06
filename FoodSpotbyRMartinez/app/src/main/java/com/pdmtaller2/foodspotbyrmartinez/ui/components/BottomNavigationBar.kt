@@ -8,12 +8,13 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 data class NavItem(val label: String, val icon: ImageVector, val route: String)
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController, currentRoute: String) {
+fun BottomNavigationBar(navController: NavController, currentRoute: String) {
     val items = listOf(
         NavItem("Listado", Icons.Default.List, "Home"),
         NavItem("Busqueda", Icons.Default.Search, "Search"),

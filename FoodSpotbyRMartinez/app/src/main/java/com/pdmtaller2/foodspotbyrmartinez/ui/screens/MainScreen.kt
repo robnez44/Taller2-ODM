@@ -1,40 +1,54 @@
 package com.pdmtaller2.foodspotbyrmartinez.ui.screens
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.pdmtaller2.foodspotbyrmartinez.data.repository.restaurants
 import com.pdmtaller2.foodspotbyrmartinez.ui.components.BottomNavigationBar
-import com.pdmtaller2.foodspotbyrmartinez.ui.components.HomeScreenContent
+import com.pdmtaller2.foodspotbyrmartinez.ui.components.RestaurantCards
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavHostController) {
-    val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "Home"
+fun MainScreen(navController: NavController) {
+    val groupedRestaurants = restaurants.groupBy { it.categories.first() }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: "Home"
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("FoodSpot", style = MaterialTheme.typography.titleLarge) }
-            )
-        },
+        topBar = { TopAppBar(title = { Text("FoodSpot") }) },
         bottomBar = {
             BottomNavigationBar(navController = navController, currentRoute = currentRoute)
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            when (currentRoute) {
-                "Home" -> HomeScreenContent()
-                "Search" -> Text("Pantalla de búsqueda")
-                "Orders" -> Text("Pantalla de órdenes")
-                else -> Text("Pantalla no encontrada")
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            groupedRestaurants.forEach { (category, restaurantList) ->
+                item {
+                    Text(
+                        text = category,
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                item {
+                    LazyRow(modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)) {
+                        items(restaurantList) { restaurant ->
+                            RestaurantCards(navController = navController, restaurant = restaurant)
+                        }
+                    }
+                }
             }
         }
     }
