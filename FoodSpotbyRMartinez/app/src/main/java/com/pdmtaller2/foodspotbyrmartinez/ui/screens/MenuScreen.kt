@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,8 @@ import com.pdmtaller2.foodspotbyrmartinez.ui.components.DishCard
 @Composable
 fun MenuScreen(
     navController: NavController,
-    restaurantId: Int
+    restaurantId: Int,
+    cartItems: SnapshotStateList<Pair<Dish, Int>>
 ) {
     val restaurant = restaurants.find { it.id == restaurantId } ?: return
     var searchQuery by remember { mutableStateOf("") }
@@ -77,6 +79,9 @@ fun MenuScreen(
                             DishCard(
                                 dish = dish,
                                 onAddClicked = {
+                                    if (!cartItems.any { it.first.id == dish.id }) {
+                                        cartItems.add(dish to 1)
+                                    }
                                     Toast.makeText(context, "${dish.name} agregado", Toast.LENGTH_SHORT).show()
                                 },
                                 modifier = Modifier.weight(1f)

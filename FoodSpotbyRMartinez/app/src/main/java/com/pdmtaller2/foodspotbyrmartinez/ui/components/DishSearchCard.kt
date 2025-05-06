@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -12,7 +13,7 @@ import coil.request.ImageRequest
 import com.pdmtaller2.foodspotbyrmartinez.data.model.Dish
 
 @Composable
-fun DishSearchCard(dish: Dish, restaurantName: String) {
+fun DishSearchCard(dish: Dish, restaurantName: String, cartItems: SnapshotStateList<Pair<Dish, Int>>) {
     val context = LocalContext.current
 
     Card(
@@ -38,6 +39,9 @@ fun DishSearchCard(dish: Dish, restaurantName: String) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
+                    if (!cartItems.any { it.first.id == dish.id }) {
+                        cartItems.add(dish to 1)
+                    }
                     Toast.makeText(context, "${dish.name} agregado", Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier.fillMaxWidth()

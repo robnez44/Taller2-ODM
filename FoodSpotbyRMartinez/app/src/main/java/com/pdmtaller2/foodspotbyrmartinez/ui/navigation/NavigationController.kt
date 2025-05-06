@@ -31,19 +31,17 @@ fun NavigationController(  navController: NavHostController,
             MainScreen(navController = navController)
         }
         composable("Search") {
-            SearchScreen(navController = navController)
+            SearchScreen(navController = navController, cartItems = cartItems)
         }
         composable("Orders") {
-            OrdersScreen(navController = navController)
+            OrdersScreen(navController = navController, cartItems = cartItems)
         }
         composable("Menu/{restaurntId}") { backStackEntry ->
-
             val restaurantId = backStackEntry.arguments?.getString("restaurntId")?.toIntOrNull()
             restaurantId?.let { id ->
-                MenuScreen(navController = navController, restaurantId = id)
-            }
-
-
+                MenuScreen(navController = navController, restaurantId = id, cartItems = cartItems)
             }
         }
+
     }
+}

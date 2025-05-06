@@ -7,16 +7,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.pdmtaller2.foodspotbyrmartinez.data.model.Dish
 import com.pdmtaller2.foodspotbyrmartinez.data.repository.restaurants
 import com.pdmtaller2.foodspotbyrmartinez.ui.components.BottomNavigationBar
 import com.pdmtaller2.foodspotbyrmartinez.ui.components.DishSearchCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController) {
+fun SearchScreen(navController: NavController, cartItems: SnapshotStateList<Pair<Dish, Int>>) {
     var searchQuery by remember { mutableStateOf("") }
 
     val allDishes = restaurants.flatMap { restaurant ->
@@ -55,7 +57,7 @@ fun SearchScreen(navController: NavController) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         for ((restaurantName, dish) in rowItems) {
                             Box(modifier = Modifier.weight(1f)) {
-                                DishSearchCard(dish = dish, restaurantName = restaurantName)
+                                DishSearchCard(dish = dish, restaurantName = restaurantName, cartItems)
                             }
                         }
                         if (rowItems.size == 1) {
